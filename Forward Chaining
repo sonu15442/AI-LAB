@@ -1,0 +1,6 @@
+fact(sunny).
+fact(warm).
+
+rule(play_outside) :- fact(sunny), fact(warm).
+
+infer(Goal) :- rule(Goal).
