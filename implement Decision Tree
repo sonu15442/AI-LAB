@@ -1,0 +1,93 @@
+import math
+from collections import Counter
+
+def entropy(data, target_attr):
+    values = [record[target_attr] for record in data]
+    total = len(values)
+    freq = Counter(values)
+    ent = 0.0
+    for count in freq.values():
+        p = count / total
+        ent -= p * math.log2(p)
+    return ent
+
+def info_gain(data, attr, target_attr):
+    total_entropy = entropy(data, target_attr)
+    values = [record[attr] for record in data]
+    total = len(data)
+    freq = Counter(values)
+    subset_entropy = 0.0
+    for val, count in freq.items():
+        subset = [record for record in data if record[attr] == val]
+        ent = entropy(subset, target_attr)
+        subset_entropy += (count / total) * ent
+    return total_entropy - subset_entropy
+
+def majority_class(data, target_attr):
+    values = [record[target_attr] for record in data]
+    freq = Counter(values)
+    return freq.most_common(1)[0][0]
+
+def build_tree(data, attributes, target_attr):
+    values = [record[target_attr] for record in data]
+    if len(set(values)) == 1:
+        return values[0]  # pure subset
+
+    if not attributes:
+        return majority_class(data, target_attr)
+
+    gains = [(attr, info_gain(data, attr, target_attr)) for attr in attributes]
+    best_attr, best_gain = max(gains, key=lambda x: x[1])
+
+    tree = {best_attr: {}}
+    remaining_attrs = [a for a in attributes if a != best_attr]
+
+    for val in set(record[best_attr] for record in data):
+        subset = [record for record in data if record[best_attr] == val]
+        subtree = build_tree(subset, remaining_attrs, target_attr)
+        tree[best_attr][val] = subtree
+
+    return tree
+
+def classify(tree, instance):
+    if not isinstance(tree, dict):
+        return tree
+    attr = next(iter(tree))
+    val = instance.get(attr)
+    if val not in tree[attr]:
+        return None
+    subtree = tree[attr][val]
+    return classify(subtree, instance)
+
+# Example dataset (Play Tennis)
+dataset = [
+    {'Outlook': 'Sunny', 'Temperature': 'Hot', 'Humidity': 'High', 'Wind': 'Weak', 'Play': 'No'},
+    {'Outlook': 'Sunny', 'Temperature': 'Hot', 'Humidity': 'High', 'Wind': 'Strong', 'Play': 'No'},
+    {'Outlook': 'Overcast', 'Temperature': 'Hot', 'Humidity': 'High', 'Wind': 'Weak', 'Play': 'Yes'},
+    {'Outlook': 'Rain', 'Temperature': 'Mild', 'Humidity': 'High', 'Wind': 'Weak', 'Play': 'Yes'},
+    {'Outlook': 'Rain', 'Temperature': 'Cool', 'Humidity': 'Normal', 'Wind': 'Weak', 'Play': 'Yes'},
+    {'Outlook': 'Rain', 'Temperature': 'Cool', 'Humidity': 'Normal', 'Wind': 'Strong', 'Play': 'No'},
+    {'Outlook': 'Overcast', 'Temperature': 'Cool', 'Humidity': 'Normal', 'Wind': 'Strong', 'Play': 'Yes'},
+    {'Outlook': 'Sunny', 'Temperature': 'Mild', 'Humidity': 'High', 'Wind': 'Weak', 'Play': 'No'},
+    {'Outlook': 'Sunny', 'Temperature': 'Cool', 'Humidity': 'Normal', 'Wind': 'Weak', 'Play': 'Yes'},
+    {'Outlook': 'Rain', 'Temperature': 'Mild', 'Humidity': 'Normal', 'Wind': 'Weak', 'Play': 'Yes'},
+    {'Outlook': 'Sunny', 'Temperature': 'Mild', 'Humidity': 'Normal', 'Wind': 'Strong', 'Play': 'Yes'},
+    {'Outlook': 'Overcast', 'Temperature': 'Mild', 'Humidity': 'High', 'Wind': 'Strong', 'Play': 'Yes'},
+    {'Outlook': 'Overcast', 'Temperature': 'Hot', 'Humidity': 'Normal', 'Wind': 'Weak', 'Play': 'Yes'},
+    {'Outlook': 'Rain', 'Temperature': 'Mild', 'Humidity': 'High', 'Wind': 'Strong', 'Play': 'No'}
+]
+
+attributes = ['Outlook', 'Temperature', 'Humidity', 'Wind']
+target_attr = 'Play'
+
+# Build the decision tree
+decision_tree = build_tree(dataset, attributes, target_attr)
+
+# Print the tree
+import pprint
+pprint.pprint(decision_tree)
+
+# Test classification
+test_instance = {'Outlook': 'Sunny', 'Temperature': 'Cool', 'Humidity': 'High', 'Wind': 'Strong'}
+result = classify(decision_tree, test_instance)
+print(f"Test instance {test_instance} classified as: {result}")
