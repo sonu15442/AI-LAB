@@ -1,0 +1,8 @@
+symptom(fever).
+symptom(cough).
+symptom(fatigue).
+
+disease(flu) :- symptom(fever), symptom(cough).
+disease(cold) :- symptom(cough).
+
+diagnose(Disease) :- disease(Disease).
