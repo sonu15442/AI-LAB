@@ -1,0 +1,6 @@
+fruit_color(apple, red).
+fruit_color(banana, yellow).
+fruit_color(grape, purple).
+
+find_fruit_color(Fruit, Color) :-
+    fruit_color(Fruit, Color).
