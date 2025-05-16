@@ -1,0 +1,12 @@
+fact(sunny).
+fact(warm).
+
+goal(play_outside).
+
+rule(play_outside) :- fact(sunny), fact(warm).
+
+prove(Goal) :- fact(Goal).
+prove(Goal) :- rule(Goal), prove_all(Goal).
+
+prove_all([]).
+prove_all([H|T]) :- prove(H), prove_all(T).
