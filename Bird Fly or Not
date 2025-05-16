@@ -1,0 +1,12 @@
+can_fly(eagle).
+can_fly(parrot).
+
+cannot_fly(penguin).
+cannot_fly(ostrich).
+
+bird_fly(Bird) :-
+    can_fly(Bird), !, write(Bird), write(' can fly.').
+bird_fly(Bird) :-
+    cannot_fly(Bird), !, write(Bird), write(' cannot fly.').
+bird_fly(Bird) :-
+    write('Unknown if '), write(Bird), write(' can fly.').
