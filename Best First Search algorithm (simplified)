@@ -1,0 +1,23 @@
+% graph edges with cost
+edge(a, b, 1).
+edge(a, c, 3).
+edge(b, d, 1).
+edge(c, d, 1).
+
+best_first_search(Start, Goal, Path) :-
+    best_first([[Start]], Goal, RevPath),
+    reverse(RevPath, Path).
+
+best_first([[Goal|Rest]|_], Goal, [Goal|Rest]).
+best_first([Path|Paths], Goal, Result) :-
+    extend(Path, NewPaths),
+    append(Paths, NewPaths, UpdatedPaths),
+    sort_paths(UpdatedPaths, SortedPaths),
+    best_first(SortedPaths, Goal, Result).
+
+extend([Node|Path], NewPaths) :-
+    findall([NewNode,Node|Path], (edge(Node, NewNode, _), \+ member(NewNode, Path)), NewPaths).
+
+sort_paths(Paths, Sorted) :-
+    % Simplified: no heuristic, just sorted by path length
+    sort(2, @=<, Paths, Sorted).
