@@ -1,0 +1,11 @@
+% States: monkey_position, box_position, banana_position, monkey_has_banana(yes/no)
+initial(state(left, left, right, no)).
+
+goal(state(_, _, _, yes)).
+
+move(state(MP, BP, BP, no), push_box, state(BP, BP, BP, no)) :- MP = BP.
+move(state(BP, BP, BP, no), climb_box, state(BP, BP, BP, yes)).
+move(state(MP, BP, BanP, HB), move_left, state(left, BP, BanP, HB)).
+move(state(MP, BP, BanP, HB), move_right, state(right, BP, BanP, HB)).
+
+% Define plan predicate for solution (not shown here for brevity)
