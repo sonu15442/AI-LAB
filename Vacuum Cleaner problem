@@ -1,0 +1,28 @@
+def vacuum_cleaner(env, location):
+    steps = 0
+    print("Initial Environment:", env)
+    while "Dirty" in env.values():
+        print(f"\nVacuum is in Room {location}")
+
+        if env[location] == "Dirty":
+            print(f"Cleaning Room {location}")
+            env[location] = "Clean"
+            steps += 1
+        else:
+            print(f"Room {location} is already clean")
+
+        # Move to the other room
+        location = "B" if location == "A" else "A"
+        steps += 1
+
+    print("\nFinal Environment:", env)
+    print(f"Total steps taken: {steps}")
+
+# Example environment setup
+environment = {
+    "A": "Dirty",
+    "B": "Dirty"
+}
+
+# Start in Room A
+vacuum_cleaner(environment, "A")
