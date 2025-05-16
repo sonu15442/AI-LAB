@@ -1,0 +1,41 @@
+import itertools
+
+def solve_cryptarithmetic():
+    # Define the puzzle words
+    word1 = "SEND"
+    word2 = "MORE"
+    result = "MONEY"
+
+    # Get all unique characters
+    unique_chars = set(word1 + word2 + result)
+    if len(unique_chars) > 10:
+        print("Too many unique letters!")
+        return
+
+    unique_chars = list(unique_chars)
+    
+    # Generate all digit permutations
+    for perm in itertools.permutations(range(10), len(unique_chars)):
+        char_digit = dict(zip(unique_chars, perm))
+
+        # Leading digits should not be zero
+        if char_digit[word1[0]] == 0 or char_digit[word2[0]] == 0 or char_digit[result[0]] == 0:
+            continue
+
+        # Convert words to numbers
+        def to_number(word):
+            return int(''.join(str(char_digit[c]) for c in word))
+
+        num1 = to_number(word1)
+        num2 = to_number(word2)
+        res = to_number(result)
+
+        if num1 + num2 == res:
+            print(f"Solution Found:\n{word1} = {num1}\n{word2} = {num2}\n{result} = {res}")
+            print("Mapping:", char_digit)
+            return
+
+    print("No solution found.")
+
+# Run the solver
+solve_cryptarithmetic()
