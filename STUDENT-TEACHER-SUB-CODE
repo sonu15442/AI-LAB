@@ -1,0 +1,8 @@
+student(jack, math101).
+student(jill, cs102).
+
+teacher(alice, math101).
+teacher(bob, cs102).
+
+subject_code(math101, math).
+subject_code(cs102, computer_science).
