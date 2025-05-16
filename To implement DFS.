@@ -1,0 +1,28 @@
+def dfs(graph, node, visited=None, traversal=None):
+    if visited is None:
+        visited = set()
+    if traversal is None:
+        traversal = []
+
+    if node not in visited:
+        print(f"Visiting: {node}")
+        visited.add(node)
+        traversal.append(node)
+        for neighbor in graph[node]:
+            dfs(graph, neighbor, visited, traversal)
+    
+    return traversal
+
+# Sample graph as adjacency list
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+}
+
+# Perform DFS from starting node 'A'
+result = dfs(graph, 'A')
+print("\nDFS Traversal Order:", result)
