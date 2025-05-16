@@ -1,0 +1,9 @@
+disease(patient1, diabetes).
+disease(patient2, hypertension).
+
+diet(diabetes, 'Low sugar diet').
+diet(hypertension, 'Low salt diet').
+
+suggest_diet(Patient, Diet) :-
+    disease(Patient, Disease),
+    diet(Disease, Diet).
